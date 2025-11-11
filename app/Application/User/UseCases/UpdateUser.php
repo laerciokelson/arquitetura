@@ -2,25 +2,30 @@
 
 namespace App\Application\User\UseCases;
 
-use App\Application\User\DTO\CreateUserDTO;
-use App\Domain\User\Entities\User;
+use App\Application\User\DTO\UpdateUserDTO;
 use App\Domain\User\Repositories\UserRepository;
+use DomainException;
 
-class CreateUser
+class UpdateUser
 {
     public function __construct(private UserRepository $repository) {}
 
-    public function executar(CreateUserDTO $data)
+    public function executar(UpdateUserDTO $data)
     {
-        $user = new User(
-            id: null,
+        $user = $this->repository->findById($data->id);
+
+        if (!$user) {
+            throw new DomainException("User not found.");
+        }
+
+        $user->update(
             name: $data->name,
             email: $data->email,
-            passwordHash: password_hash($data->password, PASSWORD_BCRYPT),
             phone: $data->phone,
             profileId: $data->profileId,
             roleId: $data->roleId,
         );
-        return $this->repository->criar($user);
+
+        return $this->repository->update($user);
     }
 }

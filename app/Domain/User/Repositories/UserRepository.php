@@ -2,10 +2,11 @@
 
 namespace App\Domain\User\Repositories;
 
-use App\Application\User\DTO\CreateUserDTO;
-use App\Models\User;
+use App\Domain\User\Entities\User;
 
 interface UserRepository
 {
-    public function criar(CreateUserDTO $dados): User;
+    public function criar(User $user): User;
+
+    public function update(User $user): User;
 }
